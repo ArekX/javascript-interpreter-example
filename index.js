@@ -8,6 +8,9 @@ age = 50;
 print('Entered name: ' + firstName + ', ' + lastName, 2);
 
 if (age > 40 && checkName(firstName, 'John')) {
+    if (age > 45) {
+        print('Age is above 45');
+    }
     print('Welcome, ' + firstName + ' you are ' + age + ' old.');
 }
 `;

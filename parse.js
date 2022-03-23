@@ -91,8 +91,11 @@ const parseCodeBlockStatements = reader => {
         statements.push(parseStatement(reader));
 
         if (reader.hasNext()) {
-            expectType('endOfLine', reader);
-            reader.next();
+            if (reader.getPreviousType() !== 'codeBlockEnd') {
+                expectType('endOfLine', reader);
+                reader.next();
+            }
+            
         }
     }
 
