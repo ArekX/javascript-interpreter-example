@@ -2,6 +2,9 @@ const parseExpression = require('./parse-expression');
 const parseFunctionExpression = require('./parse-function');
 const { parseOneOf, throwExpectedError, expectType } = require('./parser-helpers');
 
+// Token reader we will use to interpret tokens.
+const TokenReader = require('./token-reader');
+
 const parseStatements = reader => {
     const statements = [];
 
@@ -104,4 +107,7 @@ const parseCodeBlockStatements = reader => {
 
 const parseFunctionCall = reader => parseFunctionExpression(reader, parseExpression);
 
-module.exports = parseStatements;
+module.exports = tokens => {
+    const reader = new TokenReader(tokens);
+    return parseStatements(reader);
+};

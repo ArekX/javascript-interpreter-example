@@ -1,8 +1,6 @@
 // Character reader we implemented
 const CharacterReader = require('./character-reader');
 
-const TokenReader = require('./token-reader');
-
 // List of token detector functions we will implement.
 const tokenDetectors = require('./tokens');
 
@@ -57,4 +55,4 @@ const detectTokens = code => {
     return foundTokens.filter(i => i.type !== 'whitespace');
 };
 
-module.exports = code => new TokenReader(detectTokens(code));
+module.exports = code => detectTokens(code);
