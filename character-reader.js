@@ -41,7 +41,7 @@ module.exports = class CharacterReader {
         return this.linePosition;
     }
 
-    // Check and return whether ther is more code to parse.
+    // Check and return whether there is more code to parse.
     hasNext() {
         return this.position < this.code.length;
     }
