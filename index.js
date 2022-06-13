@@ -1,10 +1,11 @@
-const CharacterReader = require('./character-reader');
-
 // Code which we want to parse
 const code = `variable = 5`;
 
-// Create an instance of character reader.
-const reader = new CharacterReader(code);
+// Import the lexer
+const analyseCode = require('./lexer-analyser');
 
-// Should output a 'v'
-console.log(reader.peek());
+// Run the lexer
+const tokens = analyseCode(code);
+
+// Should output the tokens
+console.log(tokens);
