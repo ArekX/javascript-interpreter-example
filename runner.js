@@ -1,5 +1,4 @@
 const analyseCode = require('./lexer-analyser');
-
 const parseTokens = require('./parse');
 const interpretStatements = require('./interpreter');
 
