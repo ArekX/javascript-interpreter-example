@@ -1,30 +1,10 @@
-const run = require('./runner');
+const CharacterReader = require('./character-reader');
 
-const code = `
-firstName = 'John';
-lastName = 'Smith';
-age = 50;
+// Code which we want to parse
+const code = `variable = 5`;
 
-print('Entered name: ' + firstName + ', ' + lastName, 2);
+// Create an instance of character reader.
+const reader = new CharacterReader(code);
 
-if (age > 40 && checkName(firstName, 'John')) {
-    if (age > 45) {
-        print('Age is above 45');
-    }
-    print('Welcome, ' + firstName + ' you are ' + age + ' old.');
-}
-`;
-
-const vm = {
-    variables: {},
-    functions: {
-        print(text) {
-            console.log('Printing:', text, ':)');
-        },
-        checkName(name, val) {
-            return name === val;
-        }
-    }
-};
-
-run(code, vm);
+// Should output a 'v'
+console.log(reader.peek());
