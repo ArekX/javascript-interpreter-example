@@ -1,5 +1,5 @@
 // Code which we want to parse
-const code = `variable = 5;`;
+const code = `i = 5;`;
 
 // Import the lexer
 const analyseCode = require('./lexer-analyser');
