@@ -6,7 +6,6 @@ This is an implementation of an language in pure javascript purpose of this repo
 
 # Chapter 2
 
-## Finishing a lexer
+## Implementing a parser
 
-After we created a lexer we add tokens into `tokens.js` representing a detector for each type
-of the token we want to detect in our language.
+After we created a lexer and got the tokens from our code. We are ready to implement a full parser for our tokens.
