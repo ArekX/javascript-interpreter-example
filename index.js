@@ -8,5 +8,5 @@ const analyseCode = require('./lexer-analyser');
 const tokens = analyseCode(code);
 
 // Should output the tokens
-console.log(tokens);
+const parseTokens = require('./grammar');
 
