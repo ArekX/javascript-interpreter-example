@@ -50,6 +50,9 @@ const interpretExpression = (expression, vm) => {
             // For numbers we convert them to actual numbers
             // so that they can be used further in expressions.
             return parseFloat(expression.value);
+        case 'boolean':
+            // For booleans we just return them since they already have a correct value.
+            return expression.value;
         case 'variable': // For variables and the rest we will delegate them to their functions
             return interpretVariableRetrieval(expression, vm);
         case 'function':
@@ -144,6 +147,10 @@ const interpretIf = (statement, vm) => {
         // Value is true so we interpret the if's own statements
         // and return the value.
         return interpretStatements(statement.statements, vm);
+    } else if (statement.elseStatements.length > 0) {
+        // Value is false and there are else statements 
+        // so we interpret the if's else statements and return the value.
+        return interpretStatements(statement.elseStatements, vm);
     }
 
     // If check failed so we just return null.

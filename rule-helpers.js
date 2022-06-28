@@ -151,6 +151,12 @@ const minOf = (minAmount, check) => reader => {
 // checks the type of the token and (if specified)
 // a value of the token.
 const token = (type, value = null) => reader => {
+    // We reached the end of our token list so
+    // there is nothing to match.
+    if (!reader.hasNext()) {
+        return null;
+    }
+
     // first we check if we have
     // a value set and value matches
     // in our token reader

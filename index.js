@@ -1,16 +1,11 @@
 // Code which we want to parse
 const code = `
-firstName = 'John';
-lastName = 'Smith';
-age = 50;
+isVisible = true;
 
-print('Entered name: ' + firstName + ', ' + lastName);
-
-if (age > 40) {
-    if (age > 45) {
-        print('Age is above 45');
-    }
-    print('Welcome, ' + firstName + ' you are ' + age + ' old.');
+if (isVisible) {
+    print('Visible');
+} else {
+    print('Not Visible');
 }
 `;
 
@@ -42,12 +37,10 @@ const vm = {
         }
     }
 };
+
 // Interpret the statements and return last result.
 const result = interpret(statements, vm);
 
 // And finally we output the result
-console.log('Code we ran:');
-console.log(code);
 console.log('Result:')
 console.dir(result, {depth: null});
-console.log('Final VM State:', vm);

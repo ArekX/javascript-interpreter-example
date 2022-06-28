@@ -6,10 +6,15 @@ const LineStatement = rule(
     expression => expression
 );
 
-// IfExpressionStatement -> IfKeyword PStart Expression PEnd CodeBlock
+// IfExpressionStatement -> IfKeyword PStart Expression PEnd CodeBlock (ElseKeyword CodeBlock)?
 const IfExpressionStatement = rule(
-    () => exactly(IfKeyword, PStart, Expression, PEnd, CodeBlock),
-    ([,, check,, statements]) => ({ type: 'if', check, statements })
+    () => exactly(IfKeyword, PStart, Expression, PEnd, CodeBlock, optional(exactly(ElseKeyword, CodeBlock), [null, []])),
+    ([, , check, , statements, elseResult]) => ({ 
+        type: 'if', 
+        check, 
+        statements, 
+        elseStatements: elseResult[1] 
+    })
 )
 
 // CodeBlock -> BStart LineStatement* BEnd
@@ -110,9 +115,9 @@ const UnaryTerm = rule(
     })
 );
 
-// Factor -> GroupExpression | FunctionExpression | NumberExpression | VariableExpression | StringExpression
+// Factor -> GroupExpression | FunctionExpression | NumberExpression | VariableExpression | StringExpression | BooleanExpression
 const Factor = rule(
-    () => either(GroupExpression, FunctionExpression, NumberExpression, VariableExpression, StringExpression),
+    () => either(GroupExpression, FunctionExpression, NumberExpression, VariableExpression, StringExpression, BooleanExpression),
     factor => factor
 );
 
@@ -149,6 +154,15 @@ const StringExpression = rule(
     })
 );
 
+// BooleanExpression -> BooleanTrue | BooleanFalse
+const BooleanExpression = rule(
+    () => either(BooleanTrue, BooleanFalse),
+    booleanKeyword => ({
+        type: 'boolean',
+        value: booleanKeyword.value === 'true'
+    })
+);
+
 // Tokens
 const Number = token('number');
 const String = token('string');
@@ -174,5 +188,8 @@ const Subtract = token('operator', '-');
 const Multiply = token('operator', '*');
 const Divide = token('operator', '/');
 const Not = token('operator', '!');
+const BooleanTrue = token('keyword', 'true');
+const BooleanFalse = token('keyword', 'false');
+const ElseKeyword = token('keyword', 'else');
 
 module.exports = LineStatement;

@@ -129,10 +129,22 @@ const readName = reader => {
 }
 
 const readKeyword = reader => {
-    if (reader.peek(2).match(/^if$/i)) {
-        // We detected if keywords and return the token.
-        reader.next(2);
-        return { type: 'keyword', value: 'if' };
+    // We define all of they keywords our
+    // language will have.
+    const keywords = [
+        'if',
+        'true',
+        'false',
+        'else'
+    ];
+    
+    // We go through each of the keywords we have defined.
+    for(const keyword of keywords) {
+        if (reader.peek(keyword.length).match(new RegExp(`^${keyword}$`, "i"))) {
+            // We detected if keywords and return the token.
+            reader.next(keyword.length);
+            return { type: 'keyword', value: keyword };
+        }
     }
 
     // No keyword detected
