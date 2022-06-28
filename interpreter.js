@@ -137,12 +137,16 @@ const interpretBinaryOperation = (expression, vm) => {
 };
 
 const interpretIf = (statement, vm) => {
+    // Interpret the check expression we are checking for
     const checkValue = interpretExpression(statement.check, vm);
 
     if (checkValue) {
+        // Value is true so we interpret the if's own statements
+        // and return the value.
         return interpretStatements(statement.statements, vm);
     }
 
+    // If check failed so we just return null.
     return null;
 };
 
