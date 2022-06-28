@@ -138,11 +138,19 @@ const VariableExpression = rule(
 
 // NumberExpression -> Number
 const NumberExpression = rule(
-    () => Number,
-    number => ({
-        type: 'number',
-        value: number.value
-    })
+    () => exactly(optional(either(Subtract, Add), {type: 'operator', value: '+'}), Number),
+    result => {
+        let number = result[1].value;
+
+        if (result[0].value === '-') {
+            number *= -1;
+        }
+        
+        return {
+            type: 'number',
+            value: number
+        };
+    }
 );
 
 // StringExpression -> String

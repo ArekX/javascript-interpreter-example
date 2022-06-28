@@ -2,12 +2,22 @@ const readNumberToken = reader => {
     let numberText = '';
     const numberMatch = /\d/; // Regex for detecing a digit.
 
+    let hasComma = false;
+
     // We read until we characters to read.
     while (reader.hasNext()) {
         if (reader.peek().match(numberMatch)) {
             // If a number matches the regex we add the
             // character to our string
             numberText += reader.peek();
+            reader.next();
+        } else if (reader.peek() === '.') {
+            if (hasComma) {
+                return null;
+            }
+            
+            hasComma = true;
+            numberText += '.';
             reader.next();
         } else {
             // if number is not matched we do not need to search anymore.

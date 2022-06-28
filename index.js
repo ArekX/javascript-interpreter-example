@@ -1,8 +1,8 @@
 // Code which we want to parse
 const code = `
-isVisible = true;
+negativeCheck = 2 + -5.5;
 
-if (isVisible) {
+if (negativeCheck < 0) {
     print('Visible');
 } else {
     print('Not Visible');
