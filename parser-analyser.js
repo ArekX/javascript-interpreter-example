@@ -1,113 +1,34 @@
-const parseExpression = require('./parse-expression');
-const parseFunctionExpression = require('./parse-function');
-const { parseOneOf, throwExpectedError, expectType } = require('./parser-helpers');
-
-// Token reader we will use to interpret tokens.
+// We include the the grammar here.
+// Grammar exports the very first rule: LineStatement
+// That means that parseGrammar is actually same as LineStatement constant.
+const parseGrammar = require('./grammar');
 const TokenReader = require('./token-reader');
 
-const parseStatements = reader => {
-    const statements = [];
-
-    while(reader.hasNext()) {
-        statements.push(parseStatement(reader));
-
-        if (reader.hasNext() && reader.getPreviousType() !== 'codeBlockEnd') {
-            expectType('endOfLine', reader);
-            reader.next();
-        }
-    }
-
-    return statements;    
-}
-
-const parseStatement = reader => {
-    const result = parseOneOf(reader, [
-        parseIfExpression,
-        parseFunctionCall,
-        parseAssignment,
-    ]);
-
-    if (result) {
-        return result;
-    }
-
-    throwExpectedError('statement', reader);
-};
-
-const parseAssignment = reader => {
-    if (!reader.isType('name')) {
-        return null;
-    }
-
-    const variable = reader.get().value;
-
-    reader.next();
-
-    if (!reader.isType('operator') || !reader.isValue('=')) {
-        return null;
-    }
-
-    reader.next();
-
-    const value = parseExpression(reader);
-
-    return { 
-        type: 'assignment', 
-        variable, 
-        value 
-    };
-}
-
-const parseIfExpression = reader => {
-    if (!reader.isTypeValue('keyword', 'if')) {
-        return null;
-    }
-
-    reader.next();
-
-    expectType('parenStart', reader);
-    reader.next();
-
-    const expression = parseExpression(reader);
-
-    expectType('parenEnd', reader);
-    reader.next();
-    expectType('codeBlockStart', reader);
-    reader.next();
-
-    const statements = parseCodeBlockStatements(reader);
-
-    expectType('codeBlockEnd', reader);
-    reader.next();
-
-    return {
-        type: 'if',
-        check: expression,
-        statements
-    };
-}
-
-const parseCodeBlockStatements = reader => {
-    const statements = [];
-
-    while (reader.hasNext() && !reader.isType('codeBlockEnd')) {
-        statements.push(parseStatement(reader));
-
-        if (reader.hasNext()) {
-            if (reader.getPreviousType() !== 'codeBlockEnd') {
-                expectType('endOfLine', reader);
-                reader.next();
-            }
-            
-        }
-    }
-
-    return statements;
-}
-
-const parseFunctionCall = reader => parseFunctionExpression(reader, parseExpression);
-
-module.exports = tokens => {
+const parseTokens = tokens => {
+    // Create a reader for our tokens.
     const reader = new TokenReader(tokens);
-    return parseStatements(reader);
+
+    const statements = [];
+
+    while (reader.hasNext()) {
+        // We parse grammar until we have a next token.
+        const statement = parseGrammar(reader);
+
+        if (statement) {
+            // Our statement was parsed successfully,
+            // so we add it to the list of statements.
+            statements.push(statement);
+            continue;
+        }
+
+        // Something went wrong here, we couldn't parse our statement here
+        // so our language needs to throw a syntax error.
+        let token = reader.hasNext() ? reader.get() : reader.getLastToken();
+        throw new Error(`Syntax error on ${token.line}:${token.character} for "${token.value}". Expected an assignment, function call or an if statement.`);
+    }
+
+    // Return the parsed statements
+    return statements;
 };
+
+module.exports = parseTokens;

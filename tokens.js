@@ -1,29 +1,35 @@
 const readNumberToken = reader => {
     let numberText = '';
-    const numberMatch = /\d/;
+    const numberMatch = /\d/; // Regex for detecing a digit.
 
-    while (reader.hasNext()) { // read while not end of code
-        if (reader.peek().match(numberMatch)) { // if number matches add to text
+    // We read until we characters to read.
+    while (reader.hasNext()) {
+        if (reader.peek().match(numberMatch)) {
+            // If a number matches the regex we add the
+            // character to our string
             numberText += reader.peek();
             reader.next();
         } else {
-            break; // if number is not matched we do not need to search anymore.
+            // if number is not matched we do not need to search anymore.
+            break;
         }
     }
 
     if (numberText.length == 0) {
-        return null; // if no number was detected, return no token.
+        // if no number was detected, return null meaning no token detected.
+        return null;
     }
 
-    // return token of type number
+    // We found the token and we return type and value of the token.
     return { type: 'number', value: numberText };
 }
 
 const readString = reader => {
     let value = '';
-    let startedReading = false;
-    let isEscaping = false;
+    let startedReading = false; // Flag if we started reading a string
+    let isEscaping = false; // Flag if we need to ignore the next character.
 
+    // We read until we characters to read.
     while (reader.hasNext()) {
         const matchFound = reader.peek() == "'";
 
@@ -56,9 +62,10 @@ const readString = reader => {
             continue;
         }
 
+        // Add the character to our detected string.
         value += reader.peek();
-        reader.next();
-        isEscaping = false;
+        reader.next(); // Move the reader to a next character.
+        isEscaping = false; // Reset escape flag so that we do not escape the next character.
     }
 
     if (value.length == 0) {
@@ -70,13 +77,13 @@ const readString = reader => {
 }
 
 const readOperator = reader => {
-    // operators we want to detect.
+    // Regex for operator characters we want to detect.
     const operatorMatch = /^(!|\+|-|\*|\/|==|!=|&&|\|\||<|>|<=|>=|=|!=)$/;
 
-    // get one character operator for check
+    // Peek one character to detect one character operator
     const oneCharacterOperator = reader.peek();
 
-    // get two character operator for check
+    // Peek one character to detect two characters operator
     const twoCharacterOperator = reader.peek(2);
 
     let value = null;
@@ -90,9 +97,11 @@ const readOperator = reader => {
     }
 
     if (value) {
+        // Operator is found, we return the token.
         return { type: 'operator', value };
     }
 
+    // Nothing was found so we return null that the token was not found.
     return null;
 }
 
@@ -121,71 +130,86 @@ const readName = reader => {
 
 const readKeyword = reader => {
     if (reader.peek(2).match(/^if$/i)) {
+        // We detected if keywords and return the token.
         reader.next(2);
         return { type: 'keyword', value: 'if' };
     }
 
+    // No keyword detected
     return null;
 }
 
 const readParentheses = reader => {
     if (reader.peek() == '(') {
+        // We detected '(', start of parentheses
         reader.next();
         return { type: 'parenStart', value: '(' };
     }
 
     if (reader.peek() == ')') {
+        // We detected ')', end of parentheses
         reader.next();
         return { type: 'parenEnd', value: ')' };
     }
 
+    // No token was detected.
     return null;
 }
 
 const readCodeBlocks = reader => {
     if (reader.peek() == '{') {
+        // We detected '{', start of code block
         reader.next();
         return { type: 'codeBlockStart' };
     }
 
     if (reader.peek() == '}') {
+        // We detected '}', end of code block
         reader.next();
         return { type: 'codeBlockEnd' };
     }
 
+    // No token was detected.
     return null;
 }
 
 const readEndOfLine = reader => {
     if (reader.peek() == ';') {
+        // Semicolon is detected
         reader.next();
         return { type: 'endOfLine', value: ';' };
     }
 
+    // Semicolon is not detected
     return null;
 }
 
 const readComma = reader => {
     if (reader.peek() == ',') {
+        // Comma was detected
         reader.next();
         return { type: 'comma', value: ',' };
     }
 
+    // Token was not detected.
     return null;
 }
 
 const readWhitespace = reader => {
-    const whitespaceRegex = /[\t\r\n ]/;
+    const whitespaceRegex = /[\t\r\n ]/; // Regex for detecting whitespace.
     let value = '';
-    while(reader.hasNext() && reader.peek().match(whitespaceRegex)) {
+    while (reader.hasNext() && reader.peek().match(whitespaceRegex)) {
+        // add detected whitespace to the value
         value += reader.peek();
         reader.next();
     }
 
     if (value.length > 0) {
-        return {type: 'whitespace', value};
+        // Return detected whitespace.
+        return { type: 'whitespace', value };
     }
 
+    // No whitespace token was detected.
     return null;
 }
 
