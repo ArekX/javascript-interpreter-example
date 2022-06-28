@@ -4,8 +4,7 @@ Javascript Interpreter Example Code
 
 This is an implementation of an language in pure javascript purpose of this repository is to demonstrate how such an interpreter can be built.
 
-# Chapter 2
+## Implementing an interpreter
 
-## Implementing a parser
-
-After we created a lexer and got the tokens from our code. We are ready to implement a full parser for our tokens.
+When we are finished with lexing and parsing, we get a set of statements we are ready to interpret. 
+This part is about implementing an interpreter.
